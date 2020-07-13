@@ -1,12 +1,15 @@
 """
 Simple graph implementation
 """
-import queue
+from queue import Queue
 from util import Stack
 
-class Graph:
 
-    """Represent a graph as a dictionary of vertices mapping labels to edges."""
+class Graph:
+    """
+    Represent a graph as a dictionary of
+    vertices mapping labels to edges.
+    """
     def __init__(self):
         self.vertices = {}
 
@@ -28,21 +31,49 @@ class Graph:
         """
         Get all neighbors (edges) of a vertex.
         """
-        pass  # TODO
+        return list(self.vertices[vertex_id])
 
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        q = Queue()
+        q.put(starting_vertex)
+        visited = set()
+
+        while not q.empty():
+            cur = q.get()
+            if cur not in visited:
+                print(cur)
+            visited = visited.union({cur})
+
+            for v in self.vertices[cur]:
+                if v not in visited:
+                    q.put(v)
+
+        return
 
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        s = Stack()
+        s.push(starting_vertex)
+        visited = set()
+
+        while s.size() != 0:
+            cur = s.pop()
+            if cur not in visited:
+                print(cur)
+            visited = visited.union({cur})
+
+            for v in self.vertices[cur]:
+                if v not in visited:
+                    s.push(v)
+
+        return
 
     def dft_recursive(self, starting_vertex):
         """
