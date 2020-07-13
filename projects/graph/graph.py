@@ -83,14 +83,14 @@ class Graph:
         This should be done using recursion.
         """
         if starting_vertex in visited:
-            return
+            return visited
         else:
-            print(starting_vertex, "recursive")
+            print(starting_vertex)
             visited = visited.union({starting_vertex})
             for v in self.vertices[starting_vertex]:
-                self.dft_recursive(v, visited=visited)
+                visited = self.dft_recursive(v, visited=visited)
 
-        return
+        return visited
 
     def bfs(self, starting_vertex, destination_vertex):
         """
