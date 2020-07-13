@@ -15,12 +15,14 @@ class Graph:
         Add a vertex to the graph.
         """
         self.vertices[vertex_id] = set()
+        return
 
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        pass  # TODO
+        self.vertices[v1] = self.vertices[v1].union({v2})
+        return
 
     def get_neighbors(self, vertex_id):
         """
