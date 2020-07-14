@@ -99,21 +99,37 @@ class Graph:
         breath-first order.
         """
         q = Queue()
+        parent_q = Queue()
         q.put(starting_vertex)
+        parent_q.put(starting_vertex)
         visited = set()
-        path = []
+        paths = {}
+        parent = None
+        child_count = len(self.vertices[starting_vertex])
 
         while not q.empty():
+            child_count -= 1
             cur = q.get()
-            if cur not in visited:
-                print(cur)
             visited = visited.union({cur})
+            if parent:
+                paths[cur] = list(paths[parent])
+                paths[cur].append(cur)
+            else:
+                paths[cur] = [cur]
+
+            if cur == destination_vertex:
+                return paths[cur]
 
             for v in self.vertices[cur]:
                 if v not in visited:
+                    parent_q.put(v)
                     q.put(v)
 
-        return
+            if child_count == 0:
+                parent = parent_q.get()
+                child_count = len(self.vertices[parent])
+
+        return paths[cur]
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -121,9 +137,34 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        pass  # TODO
+        s = Stack()
+        s.push(starting_vertex)
+        visited = set()
+        paths = {}
+        parent = None
 
-    def dfs_recursive(self, starting_vertex, destination_vertex):
+        while s.size() > 0:
+            cur = s.pop()
+            visited = visited.union({cur})
+            if parent:
+                paths[cur] = list(paths[parent])
+                paths[cur].append(cur)
+            else:
+                paths[cur] = [cur]
+
+            if cur == destination_vertex:
+                return paths[cur]
+
+            for v in self.vertices[cur]:
+                if v not in visited:
+                    s.push(v)
+
+            parent = cur
+
+        return paths[cur]
+
+    def dfs_recursive(self, starting_vertex, destination_vertex,
+                      parent=None, path=None):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -131,7 +172,24 @@ class Graph:
 
         This should be done using recursion.
         """
-        pass  # TODO
+        if parent is None:
+            path = [starting_vertex]
+            parent = starting_vertex
+        else:
+            path = list(path)
+            path.append(starting_vertex)
+
+        if destination_vertex in path:
+            return path
+
+        for n in self.vertices[starting_vertex]:
+            path = self.dfs_recursive(n, destination_vertex, parent, path)
+
+        return path
+
+
+
+
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
