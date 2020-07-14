@@ -98,7 +98,22 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+        q = Queue()
+        q.put(starting_vertex)
+        visited = set()
+        path = []
+
+        while not q.empty():
+            cur = q.get()
+            if cur not in visited:
+                print(cur)
+            visited = visited.union({cur})
+
+            for v in self.vertices[cur]:
+                if v not in visited:
+                    q.put(v)
+
+        return
 
     def dfs(self, starting_vertex, destination_vertex):
         """
