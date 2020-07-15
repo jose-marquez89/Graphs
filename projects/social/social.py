@@ -1,3 +1,5 @@
+import random
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -42,7 +44,30 @@ class SocialGraph:
         self.last_id = 0
         self.users = {}
         self.friendships = {}
-        # !!!! IMPLEMENT ME
+
+        """
+        Originally, I thought I might have to pick from a range of possible
+        values, which is why this 'friend_pos_rng variable is here. Didn't end
+        up needing it - Me, from the past
+        """
+        # friend_pos_rng = list(range(0, (avg_friendships*2)+1))
+
+        # create a list of all possible friendships
+        possible_friendships = []
+        for x in range(1, num_users+1):
+            for y in range(1, num_users+1):
+                if x == y:
+                    continue
+                elif x > y:
+                    continue
+                else:
+                    possible_friendships.append((x, y))
+
+        random.shuffle(possible_friendships)
+
+        friend_i_verse = possible_friendships[:((avg_friendships*num_users)//2)]
+
+
 
         # Add users
 
@@ -68,3 +93,4 @@ if __name__ == '__main__':
     print(sg.friendships)
     connections = sg.get_all_social_paths(1)
     print(connections)
+
