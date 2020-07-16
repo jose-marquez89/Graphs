@@ -67,11 +67,16 @@ class SocialGraph:
 
         friend_i_verse = possible_friendships[:((avg_friendships*num_users)//2)]
 
-
-
         # Add users
+        for user in range(1, num_users+1):
+            self.add_user(user)
 
         # Create friendships
+        for user, friend in friend_i_verse:
+            self.add_friendship(user, friend)
+
+        return
+
 
     def get_all_social_paths(self, user_id):
         """
