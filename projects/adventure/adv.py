@@ -1,5 +1,4 @@
 import random
-import random
 from queue import Queue
 from ast import literal_eval
 
@@ -27,36 +26,55 @@ world.print_rooms()
 player = Player(world.starting_room)
 
 
-def room_bfs(initial, target):
+def room_bfs(initial: int, target: int, p_map: dict) -> list:
     """
     Execute a breadth-first search for the shortest
     path back to the last room with unexplored paths
+
+    initial: starting node
+
+    target: target node
+
+    p_map: player map
     """
-    shortest_path = []
-    return shortest_path
+    steps = {}
+    q = Queue()
+    q.put(initial)
+    while not q.empty():
+        cur = q.get()
+        for direction in p_map[cur]:
+            q.put(p_map[cur][direction])
+            if cur not in steps:
+                steps[p_map[cur][direction]] = [direction]
+            else:
+                steps[p_map[cur][direction]] = list(steps[cur])
+                steps[p_map[cur][direction]].append[direction]
+            if p_map[cur][direction] == target:
+                shortest_path = steps[p_map[cur][direction]]
+                return shortest_path
+    return
 
 
 def path_finder(plyr):
-    # First pass solution:
-    # Pick a random direction (or not)
-    # Move in that direction until exhausted
-    # Reverse direction until you reach starting point
-    # Move in an unexplored direction
-
+    """
+    Returns path (list) that ensures visitation of every room in map
+    """
     # Solution 2:
-    # Enqueue starting room
-    q = Queue()
-    q.put(plyr.current_room.id)
+    path = []
+    # enqueue starting room
+    nav_stack = []
+    nav_stack.append(plyr.current_room.id)
     player_map = {}
     prv = None
     opposite_dirs = {'n': 's', 'e': 'w', 's': 'n', 'w': 'e'}
+    change_dir = False
 
-    # While queue is not empty
-    while not q.empty():
-        exits = plyr.current_room.get_exits()
+    # while queue is not empty
+    while not nav_stack.empty():
         cur_room = plyr.current_room.id
         # fill out map
         if cur_room not in player_map:
+            exits = plyr.current_room.get_exits()
             player_map[cur_room] = {e: '' for e in exits}
 
         if prv:
@@ -66,30 +84,45 @@ def path_finder(plyr):
         unexplored = [direction for direction in player_map[cur_room]
                       if player_map[cur_room] == '']
 
-        if not prv:
+        if not prv or change_dir:  # check if this will work sans condition 2
             current_dir = random.choice(unexplored)
+            change_dir = False
 
         if len(unexplored) > 1:
-            q.put(cur_room)
+            nav_stack.append(cur_room)
+            # change directions if current is not available
+            if current_dir in player_map[cur_room]:
+                plyr.travel(current_dir)
+                path.append(current_dir)
+            else:
+                current_dir = random.choice(unexplored)
+                plyr.travel(current_dir)
+                path.append(current_dir)
         if len(unexplored) == 0:
             # perform search and navigate back to room
-            navigation = room_bfs(cur_room, q.get())
+            origin_room = nav_stack.pop()
+            # check if final room has been directionally exhausted
+            if len(nav_stack) == 0:
+                if '' in player_map[origin_room].values:
+                    nav_stack.append(origin_room)
+                else:
+                    break
+            navigation = room_bfs(cur_room, origin_room)
+            change_dir = True
             for step in navigation:
-                player.travel(step)
+                plyr.travel(step)
+                path.append(step)
+                prv = None
         else:
-            plyr.travel(current_dir)
+            # change directions if player hits a corner
+            if current_dir in player_map[cur_room]:
+                plyr.travel(current_dir)
+                path.append(current_dir)
+            else:
+                current_dir = unexplored.pop()
+                plyr.travel(current_dir)
+                path.append(current_dir)
 
-
-
-
-        # move in this direction
-
-        # at every room, check if unexplored > 1
-        # if unexplored
-           # queue this room
-        # when direction is exhausted
-           # search for shortest path back to queued room
-    path = []
     return path
 
 
