@@ -9,3 +9,6 @@ __pycache__
 
 # venv
 graphenv
+
+# just to practice magit
+*.geany
