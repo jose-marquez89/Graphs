@@ -3,14 +3,13 @@ from queue import Queue
 from ast import literal_eval
 from pdb import set_trace as bp
 import logging
-from pprint import pprint
 
 from player import Player
 from world import World
 
 FORMAT = "%(asctime)s - %(message)s"
 logging.basicConfig(level=logging.DEBUG, format=FORMAT)
-# logging.disable(logging.DEBUG)
+logging.disable(logging.DEBUG)
 # Load world
 world = World()
 
