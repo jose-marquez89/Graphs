@@ -32,7 +32,8 @@ def room_bfs(initial, target):
     Execute a breadth-first search for the shortest
     path back to the last room with unexplored paths
     """
-    return
+    shortest_path = []
+    return shortest_path
 
 
 def path_finder(plyr):
@@ -52,17 +53,34 @@ def path_finder(plyr):
 
     # While queue is not empty
     while not q.empty():
-        cur = q.get()
         exits = plyr.current_room.get_exits()
+        cur_room = plyr.current_room.id
         # fill out map
-        if cur not in player_map:
-            player_map[cur] = {e: '' for e in exits}
+        if cur_room not in player_map:
+            player_map[cur_room] = {e: '' for e in exits}
 
         if prv:
-            player_map[cur][opposite_dirs[current_dir]] = prv
-            player_map[prv][current_dir] = cur
-        # pick a direction
-        current_dir = random.choice(exits)
+            player_map[cur_room][opposite_dirs[current_dir]] = prv
+            player_map[prv][current_dir] = cur_room
+
+        unexplored = [direction for direction in player_map[cur_room]
+                      if player_map[cur_room] == '']
+
+        if not prv:
+            current_dir = random.choice(unexplored)
+
+        if len(unexplored) > 1:
+            q.put(cur_room)
+        if len(unexplored) == 0:
+            # perform search and navigate back to room
+            navigation = room_bfs(cur_room, q.get())
+            for step in navigation:
+                player.travel(step)
+        else:
+            plyr.travel(current_dir)
+
+
+
 
         # move in this direction
 
@@ -77,9 +95,9 @@ def path_finder(plyr):
 
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
-# traversal_path = ['n', 'n', 's', 's', 's', 's', 'n', 'n', 'e', 'e',
-#                   'w', 'w', 'w', 'w']
-traversal_path = path_finder(player)
+traversal_path = ['n', 'n', 's', 's', 's', 's', 'n', 'n', 'e', 'e',
+                  'w', 'w', 'w', 'w']
+# traversal_path = path_finder(player)
 
 
 # TRAVERSAL TEST
