@@ -59,7 +59,8 @@ def path_finder(plyr):
             player_map[cur] = {e: '' for e in exits}
 
         if prv:
-            player_map[cur][]
+            player_map[cur][opposite_dirs[current_dir]] = prv
+            player_map[prv][current_dir] = cur
         # pick a direction
         current_dir = random.choice(exits)
 
